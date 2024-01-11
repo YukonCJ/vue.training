@@ -31,6 +31,7 @@
 </head>
 
 <body>
+    <!-- https://yukoncj.github.io/week2-restfulapi/ -->
     <!-- axios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.4/axios.min.js"
         integrity="sha512-ANd7ZJmixP2T0hxOP4bS6hkci01fxyrQSyRdaY7IsWq1WlKsD0WwWBDVDZbnMR7CJZVKCTkDx/q5D5n2C2C+vg=="
@@ -51,17 +52,19 @@
                     請先登入
                 </h1>
                 <div class="col-8">
-                    <form id="form" class="form-signin">
+                    <!-- 避免提交表單刷新頁面，綁定@submit.prevent -->
+                    <form id="form" class="form-signin" @submit.prevent="login">
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="username" placeholder="name@example.com"
-                                required autofocus>
+                                required autofocus v-model="user.username">
                             <label for="username">Email address</label>
                         </div>
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="password" placeholder="Password" required>
+                            <input type="password" class="form-control" id="password" placeholder="Password" required
+                                v-model="user.password">
                             <label for="password">Password</label>
                         </div>
-                        <button class="btn btn-lg btn-primary w-100 mt-3" type="button" id="login">
+                        <button class="btn btn-lg btn-primary w-100 mt-3" type="submit" id="login">
                             登入
                         </button>
                     </form>
@@ -74,57 +77,38 @@
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script type="module">
-        const url = 'https://vue3-course-api.hexschool.io';
-        const path = 'api_test';
+        // 進入登入頁面 > 登入成功 > 進入後台產品頁面
+        const app = Vue.createApp({
+            data() {
+                return {
+                    user: {
+                        username: "",
+                        password: "",
+                    },
+                }
+            },
+            methods: {
+                login() {
+                    const url = 'https://vue3-course-api.hexschool.io';
+                    const path = 'api_test';
 
-        const usrInput = document.querySelector('#username');
-        const pwInput = document.querySelector('#password');
-        const loginBtn = document.querySelector('#login');
-        loginBtn.addEventListener('click', login);
-
-        // /v2/admin/signin
-        function login() {
-            const username = usrInput.value;
-            const password = pwInput.value;
-
-            const user = {
-                username,
-                password
-            };
-            axios.post(`${url}/v2/admin/signin`, user)
-                .then(res => {
-                    console.log(res.data.message);
-                    console.log(res);
-                    // 取得data token, expired
-                    const { token, expired } = res.data;
-                    // 存入cookie 
-                    document.cookie = `hexToken=${token}; expired=${new Date(expired)};`;
-
-                    return axios.post(`${url}/v2/api/user/check`,null,{ headers : { Authorization : token }})
+                    axios.post(`${url}/v2/admin/signin`, this.user)
                         .then(res => {
-                            console.log(res);
+                            // 取得data token, expired
+                            const { token, expired } = res.data;
+
+                            // 存入cookie 
+                            document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/;`;
+                            window.location = 'products.html';
                         })
                         .catch(err => {
                             console.dir(err);
+                            alert(err.response.data.message);
                         })
-                })
-                .catch(err => {
-                    console.dir(err);
-                })
-
-        }
-
-        // /v2/api/user/check
-        // /v2/api/{path}/admin/products/all
-
-
-
-        Vue.createApp({
-            data() {
-                return {
                 }
             }
-        }).mount('#app')
+        })
+        app.mount('#app');
     </script>
 
 </body>
