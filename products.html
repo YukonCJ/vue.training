@@ -145,7 +145,7 @@
                 },
                 getProducts() {
                     ///v2/api/{api_path}/admin/products/all
-                    axios.get(`${this.url}/api/${this.path}/admin/products/all`)
+                    axios.get(`${this.url}/api/${this.path}/admin/products`)
                         .then(res => {
                             // api取產品資料 存products陣列
                             this.products = res.data.products;
