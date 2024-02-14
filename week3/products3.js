@@ -1,8 +1,8 @@
-// import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.2/vue.esm-browser.min.js'
+import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.2/vue.esm-browser.min.js'
 const url = 'https://vue3-course-api.hexschool.io/v2';
 const path = 'api_test';
 
-const app = Vue.createApp({
+const app = createApp({
     data() {
         return {
             // modal data
@@ -10,11 +10,11 @@ const app = Vue.createApp({
                 imageUrl: '',
             },
             products: [],
-            // 控制modal
+            // modal開關
             modalProducts: null,
             delProductModal: null,
             // 判斷是否為新增
-            isNew: false
+            isNew: false,
         }
     },
     methods: {
@@ -37,7 +37,6 @@ const app = Vue.createApp({
                 .then(res => {
                     // api取產品資料 存products陣列
                     this.products = res.data.products;
-                    console.log(res);
                 })
                 .catch(err => {
                     console.dir(err);
@@ -48,7 +47,7 @@ const app = Vue.createApp({
             // 從點選傳入status 判斷執行片段
             if (status === 'new') {
                 this.temp = {
-                    imageUrl: []
+                    imagesUrl: [],
                 };
                 this.isNew = true;
                 this.modalProducts.show();
@@ -58,7 +57,7 @@ const app = Vue.createApp({
                 this.modalProducts.show();
             } else if (status === 'delete') {
                 this.temp = { ...item }
-                this.modalProducts.show();
+                this.delProductModal.show();
             }
         },
         updateProducts() {
@@ -66,7 +65,7 @@ const app = Vue.createApp({
             let api = `${url}/api/${path}/admin/product`;
             let method = 'post'
 
-            // 更新
+            // 更新 /v2/api/{api_path}/admin/product/{id}
             if (!this.isNew) {
                 api = `${url}/api/${path}/admin/product/${this.temp.id}`;
                 method = 'put'
@@ -75,22 +74,26 @@ const app = Vue.createApp({
             axios[method](api, { data: this.temp })
                 .then(res => {
                     // api取產品資料 存products陣列
-                    console.log(res);
-                    this.getProducts();
+                    alert(res.data.message);
                     this.modalProducts.hide();
+                    this.getProducts();
                     this.temp = {}
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 })
         },
         deleteProducts() {
-            let api = `${url}/api/${path}/admin/product/${this.temp}`;
+            let api = `${url}/api/${path}/admin/product/${this.temp.id}`;
 
             axios.delete(api, { data: this.temp })
                 .then(res => {
                     // api取產品資料 存products陣列
-                    console.log(res);
+                    alert(res.data.message);
+                    this.delProductModal.hide();
                     this.getProducts();
-                    this.modalProducts.hide();
                     this.temp = {}
+                }).catch((err) => {
+                    alert(err.response.data.message);
                 })
         }
 
