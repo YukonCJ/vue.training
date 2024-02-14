@@ -10,6 +10,7 @@ const app = createApp({
                 imageUrl: '',
             },
             products: [],
+            pages:{},
             // modal開關
             modalProducts: null,
             delProductModal: null,
@@ -31,12 +32,14 @@ const app = createApp({
                 })
 
         },
-        getProducts() {
+        getProducts(page = 1) { //參數預設值為1
             ///v2/api/{api_path}/admin/products/all
             axios.get(`${url}/api/${path}/admin/products`)
                 .then(res => {
                     // api取產品資料 存products陣列
                     this.products = res.data.products;
+                    this.pages = res.data.pagination;
+                    console.log(res);
                 })
                 .catch(err => {
                     console.dir(err);
