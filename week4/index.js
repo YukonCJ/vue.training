@@ -20,7 +20,7 @@
 
                             // 存入cookie 
                             document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/;`;
-                            window.location = 'products3.html';
+                            window.location = 'products4.html';
                         })
                         .catch(err => {
                             console.dir(err);

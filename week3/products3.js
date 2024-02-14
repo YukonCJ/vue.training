@@ -53,6 +53,10 @@ const app = createApp({
                 this.modalProducts.show();
             } else if (status === 'edit') {
                 this.temp = { ...item }
+                if(Array.isArray(this.temp.imagesUrl)){
+                    // 空陣列觸發新增按鈕
+                    this.temp.imagesUrl = [];
+                }
                 this.isNew = false;
                 this.modalProducts.show();
             } else if (status === 'delete') {
