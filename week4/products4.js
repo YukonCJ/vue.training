@@ -2,6 +2,8 @@ import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.2/vue.
 const url = 'https://vue3-course-api.hexschool.io/v2';
 const path = 'api_test';
 
+import pagination from './pagination.js'
+
 const app = createApp({
     data() {
         return {
@@ -34,12 +36,12 @@ const app = createApp({
         },
         getProducts(page = 1) { //參數預設值為1
             ///v2/api/{api_path}/admin/products/all
-            axios.get(`${url}/api/${path}/admin/products`)
+            axios.get(`${url}/api/${path}/admin/products?page=${page}`)
                 .then(res => {
                     // api取產品資料 存products陣列
                     this.products = res.data.products;
                     this.pages = res.data.pagination;
-                    console.log(res);
+                    console.log(res.data);
                 })
                 .catch(err => {
                     console.dir(err);
@@ -116,6 +118,9 @@ const app = createApp({
             backdrop: 'static'
         });
 
+    },
+    components:{
+        pagination
     }
 })
 
