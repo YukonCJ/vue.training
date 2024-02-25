@@ -1,8 +1,7 @@
 // 元件環境建立好
 // 版型加入元件template中
-// 將外部資源傳入內部 解除錯誤
-
-
+// props將外部資源傳入內部
+// 除錯
 
 export default {
     props:['pages','getProducts'],

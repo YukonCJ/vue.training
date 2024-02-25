@@ -96,15 +96,13 @@
         </div>
 
         <!-- MODAL SECTION -->
-        <div class="modal fade" ref="productModal" id="productModal" tabindex="-1" aria-labelledby="productModalLabel"
+        <!-- <div class="modal fade" ref="productModal" id="productModal" tabindex="-1" aria-labelledby="productModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
-                    <!-- HEAD -->
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="productModalLabel">新增產品</h1>
                     </div>
-                    <!-- BODY -->
                     <div class="modal-body row">
                         <div class="col-4">
                             <div class="mb-2">
@@ -116,19 +114,16 @@
                             </div>
                             <div>
                                 <h4>多圖設置</h4>
-                                <!-- 判斷imagesUrl是一個陣列 -->
                                 <div v-if="Array.isArray(temp.imagesUrl)">
                                     <div v-for="(img, key) in temp.imagesUrl" :key="key+'123'">
                                         <img :src="img" class="img-fluid" alt="">
                                         <input type="text" class="form-control" v-model="temp.imagesUrl[key]">
                                     </div>
-                                    <!-- 空陣列 及 輸入不為空值時 才可以新增 -->
                                     <button class="btn btn-outline-primary btn-sm d-block w-100"
                                         v-if="temp.imagesUrl.length === 0 || temp.imagesUrl[temp.imagesUrl.length -1]"
                                         @click="temp.imagesUrl.push('')">
                                         新增圖片
                                     </button>
-                                    <!-- 其他條件 -->
                                     <button class="btn btn-outline-danger btn-sm d-block w-100" v-else
                                         @click="temp.imagesUrl.pop()">
                                         刪除圖片
@@ -185,18 +180,22 @@
                             </div>
                         </div>
                     </div>
-                    <!-- FOOTER -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                         <button type="button" class="btn btn-primary" @click="updateProducts">確認</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
+        <product-Modal
+            :temp="temp"
+            :update-products="updateProducts"
+            ref="pModal"
+        ></product-Modal>
         <!-- # -->
 
         <!-- DEL MODAL -->
-        <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
+        <!-- <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
             aria-labelledby="delProductModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content border-0">
@@ -220,7 +219,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
+        <delete-Modal
+            :temp="temp"
+            :delete-products="deleteProducts"
+            ref="delModal"
+        ></delete-Modal>
         <!-- # -->
 
     </div>

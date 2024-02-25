@@ -3,6 +3,8 @@ const url = 'https://vue3-course-api.hexschool.io/v2';
 const path = 'api_test';
 
 import pagination from './pagination.js'
+import productModal from './productModal.js'
+import deleteModal from './deleteModal.js'
 
 const app = createApp({
     data() {
@@ -41,7 +43,6 @@ const app = createApp({
                     // api取產品資料 存products陣列
                     this.products = res.data.products;
                     this.pages = res.data.pagination;
-                    console.log(res.data);
                 })
                 .catch(err => {
                     console.dir(err);
@@ -55,14 +56,15 @@ const app = createApp({
                     imagesUrl: [],
                 };
                 this.isNew = true;
-                this.modalProducts.show();
+                this.$refs.pModal.openModal();
             } else if (status === 'edit') {
                 this.temp = { ...item }
                 this.isNew = false;
-                this.modalProducts.show();
+                this.$refs.pModal.openModal();
             } else if (status === 'delete') {
                 this.temp = { ...item }
-                this.delProductModal.show();
+                // this.$refs.delModal.open();
+                this.$refs.delModal.open();
             }
         },
         updateProducts() {
@@ -80,7 +82,7 @@ const app = createApp({
                 .then(res => {
                     // api取產品資料 存products陣列
                     alert(res.data.message);
-                    this.modalProducts.hide();
+                    this.$refs.pModal.closeModal();
                     this.getProducts();
                     this.temp = {}
                 }).catch((err) => {
@@ -94,7 +96,7 @@ const app = createApp({
                 .then(res => {
                     // api取產品資料 存products陣列
                     alert(res.data.message);
-                    this.delProductModal.hide();
+                    this.$refs.delModal.close();
                     this.getProducts();
                     this.temp = {}
                 }).catch((err) => {
@@ -109,18 +111,20 @@ const app = createApp({
         // 初始化->登入頁導向產品頁->先觸發驗證身份check()
         this.getProducts();
         // ref 綁定modal元素
-        this.modalProducts = new bootstrap.Modal(this.$refs.productModal, {
-            keyboard: false,
-            backdrop: 'static'
-        });
-        this.delProductModal = new bootstrap.Modal(this.$refs.delProductModal, {
-            keyboard: false,
-            backdrop: 'static'
-        });
+        // this.modalProducts = new bootstrap.Modal(this.$refs.productModal, {
+        //     keyboard: false,
+        //     backdrop: 'static'
+        // });
+        // this.delProductModal = new bootstrap.Modal(this.$refs.delProductModal, {
+        //     keyboard: false,
+        //     backdrop: 'static'
+        // });
 
     },
     components:{
-        pagination
+        pagination,
+        productModal,
+        deleteModal,
     }
 })
 
