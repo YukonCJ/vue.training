@@ -1,57 +1,76 @@
-import {createApp} from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.18/vue.esm-browser.min.js'
-const apiUrl ='https://vue3-course-api.hexschool.io/v2';
-const apiPath ='api_test';
+import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.18/vue.esm-browser.min.js'
+const apiUrl = 'https://vue3-course-api.hexschool.io/v2';
+const apiPath = 'api_test';
+
+Object.keys(VeeValidateRules).forEach(rule => {
+    if (rule !== 'default') {
+        VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+    }
+});
+// 中文資源
+VeeValidateI18n.loadLocaleFromURL('https://unpkg.com/@vee-validate/i18n@4.12.4/dist/locale/zh_TW.json');
+
+VeeValidate.configure({
+    generateMessage: VeeValidateI18n.localize('zh_TW'),
+    validateOnInput: true, // 輸入文字時，就立即進行驗證
+});
+
 
 const userModal = {
-    props:['tempProduct','addToCart'],
-    data(){
+    props: ['tempProduct', 'addToCart'],
+    data() {
         return {
-            productModal:null,
-            qty:1 
+            productModal: null,
+            qty: 1
         }
     },
-    watch:{
+    watch: {
         // modal每次開啟 tempProduct更動 qty數字重置
-        tempProduct(){
+        tempProduct() {
             this.qty = 1;
         }
     },
-    methods:{
-        open(){
+    methods: {
+        open() {
             this.productModal.show();
         },
-        close(){
+        close() {
             this.productModal.hide();
         }
     },
-    template:`#userProductModal`,
-    mounted(){
+    template: `#userProductModal`,
+    mounted() {
         this.productModal = new bootstrap.Modal(this.$refs.modal);
     }
 }
 
-const app = createApp({
-    data(){
+const app = Vue.createApp({
+    data() {
         return {
-            products:[],
-            tempProduct:{},
-            status:{
-                addCartLoading:'',
-                cartQtyLoading:''
+            products: [],
+            tempProduct: {},
+            status: {
+                addCartLoading: '',
+                cartQtyLoading: ''
             },
-            carts:{}
+            carts: {},
+            form:{
+                user:{
+                    email:'',
+                }
+            }
         }
     },
-    methods:{
+    methods: {
         // 取得api資料
-        getProducts(){
+        getProducts() {
             axios.get(`${apiUrl}/api/${apiPath}/products/all`)
                 .then(res => {
                     console.log(res);
-                    this.products=res.data.products
+                    this.products = res.data.products
                 })
         },
-        addToCart( product_id, qty = 1 ){
+        addToCart(product_id, qty = 1) {
             const order = {
                 product_id,
                 qty
@@ -67,9 +86,9 @@ const app = createApp({
                 })
 
         },
-        changeCartQty( item, qty = 1 ){
+        changeCartQty(item, qty = 1) {
             const order = {
-                product_id:item.product_id,
+                product_id: item.product_id,
                 qty
             }
             this.status.cartQtyLoading = item.id;
@@ -82,7 +101,7 @@ const app = createApp({
                 })
 
         },
-        removeCartItem(id){
+        removeCartItem(id) {
             this.status.cartQtyLoading = item.id;
             axios
                 .delete(`${apiUrl}/api/${apiPath}/cart/${id}`)
@@ -93,25 +112,31 @@ const app = createApp({
                 })
 
         },
-        getCart(){
+        getCart() {
             axios.get(`${apiUrl}/api/${apiPath}/cart`)
                 .then(res => {
                     console.log(res);
                     this.carts = res.data.data
                 })
         },
-        openModal(product){
+        openModal(product) {
             this.tempProduct = product;
             this.$refs.userModal.open();
-        }
+        },
+        createOrder(){}
     },
-    components:{
+    components: {
         userModal,
     },
-    mounted(){
+    mounted() {
         this.getProducts();
         this.getCart();
     }
 })
 
+app.component('VForm', VeeValidate.Form); // form
+app.component('VField', VeeValidate.Field); // input
+app.component('ErrorMessage', VeeValidate.ErrorMessage); // 錯誤回饋
+
 app.mount('#app');
+
