@@ -57,7 +57,11 @@ const app = Vue.createApp({
             form:{
                 user:{
                     email:'',
-                }
+                    name:'',
+                    tel:'',
+                    address:'',
+                },
+                message:''
             }
         }
     },
@@ -83,6 +87,7 @@ const app = Vue.createApp({
                     // 清空loading狀態
                     this.status.addCartLoading = '';
                     this.$refs.userModal.close();
+                    this.getCart();
                 })
 
         },
@@ -102,7 +107,7 @@ const app = Vue.createApp({
 
         },
         removeCartItem(id) {
-            this.status.cartQtyLoading = item.id;
+            this.status.cartQtyLoading = id;
             axios
                 .delete(`${apiUrl}/api/${apiPath}/cart/${id}`)
                 .then(res => {
@@ -110,6 +115,15 @@ const app = Vue.createApp({
                     this.status.cartQtyLoading = '';
                     this.getCart();
                 })
+
+        },
+        removeCartAll(){
+            axios
+            .delete(`${apiUrl}/api/${apiPath}/carts`)
+            .then(res => {
+                console.log(res);
+                this.getCart();
+            })
 
         },
         getCart() {
@@ -123,7 +137,21 @@ const app = Vue.createApp({
             this.tempProduct = product;
             this.$refs.userModal.open();
         },
-        createOrder(){}
+        createOrder(){
+            const order = this.form;
+            // /v2/api/{api_path}/order
+            axios.post(`${apiUrl}/api/${apiPath}/order`, { data: order } )
+                .then(res => {
+                    console.log(res);
+                    alert(res.data.message);
+                    // 重置表單
+                    this.$refs.form.resetForm();
+                    this.getCart();            
+                }).catch(err => {
+                    alert(err.response.data.message)
+                })
+
+        }
     },
     components: {
         userModal,
