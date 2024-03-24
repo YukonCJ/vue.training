@@ -7,14 +7,19 @@ const routes = [
     component: () => import('../views/FrontView.vue'),
     children: [
       {
-        path: '/news',
-        name: '最新訊息',
-        component: () => import('../views/NewsView.vue')
+        path: '/home',
+        name: '首頁',
+        component: () => import('../views/HomeView.vue')
       },
       {
         path: '/about',
         name: '關於我',
         component: () => import('../views/AboutView.vue')
+      },
+      {
+        path: '/products',
+        name: '產品',
+        component: () => import('../views/ProductsView.vue')
       }
     ]
   },
